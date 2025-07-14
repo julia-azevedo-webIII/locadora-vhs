@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de VHS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">VHS Locadora</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/vhs">VHS</a>
+                <a class="nav-link" href="/categories">Categorias</a>
+                <a class="nav-link" href="/vhs/available">Disponíveis</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>Lista de VHS</h1>
+            <a href="/vhs/new" class="btn btn-primary">Adicionar VHS</a>
+        </div>
+        
+        <!-- Formulário de busca -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <form method="GET" action="/vhs/search">
+                    <div class="input-group">
+                        <input type="text" name="title" class="form-control" placeholder="Buscar por título...">
+                        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form method="GET" action="/vhs/search">
+                    <div class="input-group">
+                        <select name="categoryId" class="form-select">
+                            <option value="">Todas as categorias</option>
+                            <option th:each="category : ${categories}" 
+                                    th:value="${category.id}" 
+                                    th:text="${category.name}"></option>
+                        </select>
+                        <button class="btn btn-outline-secondary" type="submit">Filtrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3" th:each="vhs : ${vhsList}">
+                <div class="card">
+                    <img th:src="${vhs.imageUrl}" class="card-img-top" alt="Capa do VHS" 
+                         style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${vhs.title}"></h5>
+                        <p class="card-text">
+                            <strong>Categoria:</strong> 
+                            <span th:text="${vhs.category != null ? vhs.category.name : 'Sem categoria'}"></span>
+                        </p>
+                        <p class="card-text">
+                            <strong>Status:</strong> 
+                            <span class="badge" 
+                                  th:class="${vhs.status.name() == 'DISPONIVEL' ? 'bg-success' : 
+                                           vhs.status.name() == 'ALUGADO' ? 'bg-warning' : 'bg-danger'}"
+                                  th:text="${vhs.status.descricao}"></span>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                Cadastrado em: <span th:text="${vhs.registrationDate}"></span>
+                            </small>
+                        </p>
+                        <div class="btn-group" role="group">
+                            <a th:href="@{/vhs/edit/{id}(id=${vhs.id})}" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <a th:href="@{/vhs/delete/{id}(id=${vhs.id})}" class="btn btn-sm btn-outline-danger" 
+                               onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                        </div>
+                        <div class="mt-2">
+                            <form th:if="${vhs.status.name() == 'DISPONIVEL'}" 
+                                  method="POST" th:action="@{/vhs/rent/{id}(id=${vhs.id})}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-success">Alugar</button>
+                            </form>
+                            <form th:if="${vhs.status.name() == 'ALUGADO'}" 
+                                  method="POST" th:action="@{/vhs/return/{id}(id=${vhs.id})}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-warning">Devolver</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div th:if="${#lists.isEmpty(vhsList)}" class="alert alert-info">
+            Nenhum VHS encontrado.
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
