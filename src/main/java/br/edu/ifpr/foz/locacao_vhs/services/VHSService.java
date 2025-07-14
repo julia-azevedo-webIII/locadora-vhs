@@ -1,11 +1,17 @@
 package br.edu.ifpr.foz.locacao_vhs.services;
 
+<<<<<<< HEAD
 import br.edu.ifpr.foz.locacao_vhs.TapeStatus;
+=======
+>>>>>>> 94be84c198fc5841158e3b6036a40f20ec424843
 import br.edu.ifpr.foz.locacao_vhs.models.*;
 import br.edu.ifpr.foz.locacao_vhs.repositories.*;
 
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Optional;
+=======
+>>>>>>> 94be84c198fc5841158e3b6036a40f20ec424843
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +24,7 @@ public class VHSService {
     public List<VHS> findAll() {
         return vhsRepository.findAll();
     }
+<<<<<<< HEAD
     public Optional<VHS> findById(Long id) {
         return vhsRepository.findById(id);
     }
@@ -69,4 +76,6 @@ public class VHSService {
         }
         return null;
     }
+=======
+>>>>>>> 94be84c198fc5841158e3b6036a40f20ec424843
 }
